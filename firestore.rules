@@ -1,0 +1,69 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() { return request.auth != null; }
+    function isAdmin() {
+      return signedIn() && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
+    function boundEmp(code) {
+      let e = get(/databases/$(database)/documents/employees/$(code));
+      return signedIn() && e != null && e.data.uid == request.auth.uid && e.data.active == true;
+    }
+
+    // صاحب النظام (أول مدير) — يُنشأ مرة واحدة فقط
+    match /meta/owner {
+      allow read: if signedIn();
+      allow create: if signedIn()
+        && request.auth.token.firebase.sign_in_provider == 'password'
+        && request.resource.data.uid == request.auth.uid;
+      allow update, delete: if false;
+    }
+
+    match /admins/{uid} {
+      allow read: if signedIn() && (request.auth.uid == uid || isAdmin());
+      allow create: if signedIn() && request.auth.uid == uid
+        && !exists(/databases/$(database)/documents/meta/owner)
+        && getAfter(/databases/$(database)/documents/meta/owner).data.uid == uid;
+      allow update, delete: if false;
+    }
+
+    match /settings/{id} {
+      allow read: if signedIn();
+      allow write: if isAdmin();
+    }
+
+    match /employees/{code} {
+      allow read: if isAdmin() || (signedIn() && (resource == null
+        || resource.data.uid == null || resource.data.uid == request.auth.uid));
+      allow create, delete: if isAdmin();
+      allow update: if isAdmin() || (signedIn()
+        && resource.data.uid == null && resource.data.active == true
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.diff(resource.data).affectedKeys()
+             .hasOnly(['uid', 'deviceId', 'device', 'boundAt']));
+    }
+
+    match /attendance/{id} {
+      allow read: if isAdmin() || (signedIn() && (resource == null || resource.data.uid == request.auth.uid));
+
+      // بصمة الحضور: مرة واحدة باليوم، بوقت السيرفر
+      allow create: if boundEmp(request.resource.data.code)
+        && request.resource.data.uid == request.auth.uid
+        && id == request.resource.data.code + '_' + request.resource.data.date
+        && request.resource.data.inTs == request.time
+        && request.resource.data.keys().hasOnly(
+             ['code', 'name', 'uid', 'date', 'inTs', 'inLat', 'inLng', 'inAcc', 'inDist']);
+
+      // بصمة الانصراف: مرة واحدة، بوقت السيرفر
+      allow update: if isAdmin() || (boundEmp(resource.data.code)
+        && resource.data.uid == request.auth.uid
+        && !('outTs' in resource.data)
+        && request.resource.data.outTs == request.time
+        && request.resource.data.diff(resource.data).affectedKeys()
+             .hasOnly(['outTs', 'outLat', 'outLng', 'outAcc', 'outDist']));
+
+      allow delete: if isAdmin();
+    }
+  }
+}

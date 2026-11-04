@@ -1,0 +1,7 @@
+{
+  "name": "basma-web",
+  "private": true,
+  "scripts": { "build": "esbuild src/main.js --bundle --minify --format=iife --target=chrome90 --outfile=../app/src/main/assets/app.js" },
+  "dependencies": { "firebase": "^10.14.1" },
+  "devDependencies": { "esbuild": "^0.24.0" }
+}
