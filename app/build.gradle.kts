@@ -11,8 +11,8 @@ android {
         applicationId = "com.hayder.invoice"
         minSdk = 26
         targetSdk = 34
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = 2
+        versionName = "1.1"
     }
 
     // مفتاح توقيع ثابت حتى تتحدث النسخ الجديدة فوق القديمة بدون حذف

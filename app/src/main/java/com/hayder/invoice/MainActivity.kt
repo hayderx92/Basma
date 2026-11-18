@@ -69,7 +69,7 @@ class MainActivity : AppCompatActivity() {
             override fun onPageFinished(view: WebView, url: String?) {
                 val job = pending ?: return
                 pending = null
-                view.postDelayed({ job() }, 700)
+                view.postDelayed({ job() }, 1200)
             }
         }
         root.addView(pdfWeb, FrameLayout.LayoutParams(10, 10))

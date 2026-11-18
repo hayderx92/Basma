@@ -1,10 +1,14 @@
 // Renders an invoice as A4 pages (794 x 1123 CSS px = 210 x 297 mm)
 (function () {
   const CSS = `
+@font-face{font-family:InvLat;font-weight:400;src:url(fonts/arimo-latin-400-normal.woff2) format("woff2");}
+@font-face{font-family:InvLat;font-weight:700;src:url(fonts/arimo-latin-700-normal.woff2) format("woff2");}
+@font-face{font-family:InvAr;font-weight:400;src:url(fonts/noto-naskh-arabic-arabic-400-normal.woff2) format("woff2");}
+@font-face{font-family:InvAr;font-weight:700;src:url(fonts/noto-naskh-arabic-arabic-700-normal.woff2) format("woff2");}
 @page { size: A4; margin: 0; }
 html,body{margin:0;padding:0;background:#fff;}
 .ipage{direction:ltr;text-align:left;position:relative;width:794px;height:1123px;overflow:hidden;background:#fff;color:#111;
-  font-family:Arial,"Helvetica Neue",Roboto,"Noto Sans Arabic","Noto Naskh Arabic",sans-serif;
+  font-family:InvLat,InvAr,Arial,sans-serif;
   page-break-after:always;break-after:page;box-sizing:border-box;}
 .ipage:last-child{page-break-after:auto;break-after:auto;}
 .ipage *{box-sizing:border-box;}
@@ -28,11 +32,11 @@ table.items th{font-weight:normal;height:38px;text-align:center;line-height:15px
 table.items td{height:24px;}
 td.c{text-align:center;} td.r{text-align:right;} td.l{text-align:left;}
 td.name{unicode-bidi:plaintext;}
-.note{left:22px;width:240px;font-size:14px;line-height:20px;display:flex;}
+.note{left:22px;width:max-content;max-width:330px;font-size:14px;font-weight:bold;line-height:20px;display:flex;}
 .note .k{white-space:nowrap;padding-right:6px;}
 .note .t{flex:1;}
 .note .t div, .note2 div{unicode-bidi:plaintext;text-align:start;}
-.note2{left:22px;width:215px;font-size:14px;line-height:20px;}
+.note2{left:22px;width:max-content;max-width:330px;font-size:14px;font-weight:bold;line-height:20px;}
 .note2 .ph{font-size:16px;}
 .tot{width:94px;padding-left:8px;font-size:13.5px;}
 .tot .v{font-weight:bold;font-size:13px;margin-top:10px;}
@@ -102,7 +106,7 @@ td.name{unicode-bidi:plaintext;}
     h += `<div class="abs cell" style="left:276px;top:315px">Offer Type :</div>`;
     h += `<div class="abs cell" style="left:376px;top:314px"><b>${esc(inv.offer)}</b></div>`;
     // row 2 right
-    h += `<div class="abs cell" style="left:536px;top:293px">Salesman&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;<span style="font-size:13px">${esc(inv.salesman)}</span></div>`;
+    h += `<div class="abs cell" style="left:536px;top:293px">Salesman&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;<b style="font-size:13px">${esc(inv.salesman)}</b></div>`;
     // table
     h += `<table class="items"><colgroup>
       <col style="width:30px"><col style="width:180px"><col style="width:94px"><col style="width:74px">
