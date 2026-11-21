@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>مصاريف سفرة إيران</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap">
+<style id="st">
+:root{--bg:#f6f4ef;--card:#fff;--ink:#1d2421;--mut:#6b746f;--line:#e4e0d7;--acc:#0f6b5c;--acc2:#e7f2ef;--pos:#137a3a;--neg:#b3261e;--r:14px}
+*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--ink);font-family:"IBM Plex Sans Arabic",system-ui,sans-serif;-webkit-tap-highlight-color:transparent}
+#root{max-width:560px;margin:0 auto;padding:16px 14px 90px}
+h1{font-size:20px;margin:4px 0 2px}.sub{color:var(--mut);font-size:13px;margin-bottom:14px}
+.tabs{display:flex;gap:6px;background:#ebe7de;padding:4px;border-radius:12px;margin-bottom:14px}
+.tabs button{flex:1;border:0;background:transparent;padding:10px 4px;border-radius:9px;font:inherit;font-weight:600;color:var(--mut)}
+.tabs button.on{background:var(--card);color:var(--acc);box-shadow:0 1px 3px #0001}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:14px;margin-bottom:12px}
+label.l{display:block;font-size:13px;color:var(--mut);margin:12px 0 6px;font-weight:500}label.l:first-child{margin-top:0}
+input[type=text]{width:100%;padding:12px;border:1px solid var(--line);border-radius:10px;font:inherit;font-size:17px;background:#fcfbf8;color:var(--ink)}
+input[type=text]:focus{outline:2px solid var(--acc);border-color:transparent}
+.amt{font-size:24px!important;font-weight:700;letter-spacing:.5px;text-align:center}
+.seg{display:flex;gap:6px;flex-wrap:wrap}
+.seg button{flex:1;min-width:0;border:1px solid var(--line);background:#fcfbf8;padding:11px 6px;border-radius:10px;font:inherit;font-weight:600;color:var(--ink)}
+.seg button.on{background:var(--acc);border-color:var(--acc);color:#fff}
+.seg.small button{padding:8px 6px;font-size:14px;font-weight:500}
+.seg.small button.on{background:var(--acc2);color:var(--acc);border-color:var(--acc)}
+.conv{font-size:13px;color:var(--acc);margin-top:6px;text-align:center;min-height:18px}
+.btn{width:100%;border:0;background:var(--acc);color:#fff;padding:14px;border-radius:12px;font:inherit;font-size:17px;font-weight:700;margin-top:16px}
+.btn:disabled{opacity:.45}.btn.ghost{background:var(--acc2);color:var(--acc);font-size:15px;padding:11px;margin-top:8px}
+.err{color:var(--neg);font-size:13px;margin-top:8px;min-height:1em}
+.item{display:flex;gap:10px;align-items:flex-start;padding:12px 0;border-bottom:1px solid var(--line)}.item:last-child{border-bottom:0}
+.item .b{flex:1;min-width:0}.item .d{font-weight:600;word-break:break-word}.item .m{font-size:12.5px;color:var(--mut);margin-top:3px}
+.item .v{text-align:left;white-space:nowrap;font-weight:700}.item .v small{display:block;font-weight:400;color:var(--mut);font-size:12px}
+.x{border:0;background:transparent;color:var(--mut);font-size:18px;padding:2px 6px;line-height:1}
+.tot{display:flex;justify-content:space-between;align-items:baseline}.tot b{font-size:22px}
+.row{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--line);gap:8px}.row:last-child{border-bottom:0}
+.who{font-weight:700}.small{font-size:12.5px;color:var(--mut)}
+.bal{font-weight:700;text-align:left}.pos{color:var(--pos)}.neg{color:var(--neg)}
+.pill{display:inline-block;font-size:12px;padding:2px 8px;border-radius:20px;margin-top:3px}
+.pill.pos{background:#e5f4ea}.pill.neg{background:#fbe9e7}
+.tr{display:flex;align-items:center;gap:8px;padding:10px 0;border-bottom:1px solid var(--line);font-weight:600}.tr:last-child{border-bottom:0}.tr .arr{color:var(--mut)}.tr .v{margin-inline-start:auto;color:var(--acc)}
+.empty{color:var(--mut);text-align:center;padding:20px 0}
+h2{font-size:15px;margin:0 0 8px}
+.modal{position:fixed;inset:0;background:#0006;display:flex;align-items:center;justify-content:center;padding:20px;z-index:9}
+.modal .card{max-width:380px;width:100%}.modal .acts{display:flex;gap:8px}.modal .acts .btn{margin-top:14px}
+.btn.red{background:var(--neg)}.btn.gray{background:#ebe7de;color:var(--ink)}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 16px;border-radius:10px;font-size:14px;z-index:10}
+.status{font-size:12px;color:var(--mut);text-align:center;margin-top:6px}
+</style></head><body><div id="root"></div>
+<script id="state" type="application/json">{"rate":700,"people":["مصطفى","حيدر","عباس","حسن صالح"],"items":[]}</script>
+<script id="app">
+(function(){
+var S=JSON.parse(document.getElementById('state').textContent);
+var LS='iran-trip-expenses-v1',art=null,saving=false;
+try{var ls=localStorage.getItem(LS);if(ls&&S.items.length===0){var p=JSON.parse(ls);if(p&&p.items&&p.items.length)S=p;}}catch(e){}
+var ui={tab:(function(){try{return sessionStorage.getItem('trip-tab')||'add'}catch(e){return 'add'}})(),amt:'',cur:'IQD',payer:null,desc:'',split:null,err:''};
+function resetSplit(){ui.split=S.people.slice();}resetSplit();
+var root=document.getElementById('root');
+function esc(s){return String(s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]});}
+function digits(s){return String(s).replace(/[٠-٩]/g,function(d){return d.charCodeAt(0)-0x660}).replace(/[۰-۹]/g,function(d){return d.charCodeAt(0)-0x6F0}).replace(/[٬,\s]/g,'').replace(/٫/g,'.');}
+function num(s){var v=parseFloat(digits(s));return isFinite(v)?v:0;}
+function fmt(n){return Math.round(n).toLocaleString('en-US');}
+function toIQD(a,c){return c==='TMN'?a*1000/S.rate:a;}
+function curName(c){return c==='TMN'?'تومان':'د.ع';}
+function calc(){var P={};S.people.forEach(function(p){P[p]={paid:0,share:0};});var total=0;
+ S.items.forEach(function(it){total+=it.iqd;if(P[it.payer])P[it.payer].paid+=it.iqd;var sp=(it.split&&it.split.length?it.split:S.people);sp.forEach(function(p){if(P[p])P[p].share+=it.iqd/sp.length;});});
+ S.people.forEach(function(p){P[p].bal=P[p].paid-P[p].share;});
+ var cr=[],db=[];S.people.forEach(function(p){var b=Math.round(P[p].bal);if(b>0)cr.push([p,b]);else if(b<0)db.push([p,-b]);});
+ cr.sort(function(a,b){return b[1]-a[1]});db.sort(function(a,b){return b[1]-a[1]});var tr=[],i=0,j=0;
+ while(i<db.length&&j<cr.length){var m=Math.min(db[i][1],cr[j][1]);if(m>0)tr.push([db[i][0],cr[j][0],m]);db[i][1]-=m;cr[j][1]-=m;if(db[i][1]<=0)i++;if(cr[j][1]<=0)j++;}
+ return{P:P,total:total,tr:tr};}
+function buildDoc(){var css=document.getElementById('st').textContent,app=document.getElementById('app').textContent;
+ var st=JSON.stringify(S).replace(/</g,'\\u003c');
+ return '<!DOCTYPE html>\n<html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>مصاريف سفرة إيران</title>\n<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap">\n<style id="st">'+css+'</style></head><body><div id="root"></div>\n<script id="state" type="application/json">'+st+'<\/script>\n<script id="app">'+app+'<\/script>\n</body></html>';}
+function save(){try{localStorage.setItem(LS,JSON.stringify(S));}catch(e){}
+ if(art){saving=true;render();art.publish(buildDoc()).then(function(){saving=false;},function(e){saving=false;toast('تم الحفظ على هذا الجهاز فقط');render();});}}
+var tt;function toast(m){var o=document.querySelector('.toast');if(o)o.remove();var t=document.createElement('div');t.className='toast';t.textContent=m;document.body.appendChild(t);clearTimeout(tt);tt=setTimeout(function(){t.remove()},2200);}
+function modal(html,onOk){var m=document.createElement('div');m.className='modal';m.innerHTML='<div class="card">'+html+'<div class="acts"><button class="btn gray" data-a="no">إلغاء</button><button class="btn red" data-a="ok">تأكيد</button></div></div>';
+ m.addEventListener('click',function(e){var a=e.target.getAttribute('data-a');if(e.target===m||a==='no')m.remove();if(a==='ok'){m.remove();onOk();}});document.body.appendChild(m);}
+function render(){var h='<h1>مصاريف سفرة إيران</h1><div class="sub">'+S.people.map(esc).join(' · ')+'<br>كل '+fmt(S.rate)+' تومان = 1,000 دينار عراقي</div>';
+ h+='<div class="tabs">'+[['add','إضافة'],['list','المصاريف ('+S.items.length+')'],['sum','الحساب']].map(function(t){return '<button data-tab="'+t[0]+'" class="'+(ui.tab===t[0]?'on':'')+'">'+t[1]+'</button>'}).join('')+'</div>';
+ if(ui.tab==='add')h+=addView();else if(ui.tab==='list')h+=listView();else h+=sumView();
+ if(saving)h+='<div class="status">جارٍ الحفظ…</div>';
+ root.innerHTML=h;var a=document.getElementById('amt');if(a&&ui.focus){a.focus();ui.focus=false;}}
+function convLine(){var a=num(ui.amt);if(!a)return'';return ui.cur==='TMN'?'= '+fmt(toIQD(a,'TMN'))+' دينار عراقي':'';}
+function addView(){var h='<div class="card"><label class="l">المبلغ</label><input id="amt" class="amt" type="text" inputmode="decimal" placeholder="0" value="'+esc(ui.amt)+'">';
+ h+='<div class="seg" style="margin-top:8px">'+[['IQD','دينار عراقي'],['TMN','تومان إيراني']].map(function(c){return '<button data-cur="'+c[0]+'" class="'+(ui.cur===c[0]?'on':'')+'">'+c[1]+'</button>'}).join('')+'</div><div class="conv" id="conv">'+convLine()+'</div>';
+ h+='<label class="l">الدافع</label><div class="seg">'+S.people.map(function(p,i){return '<button data-payer="'+i+'" class="'+(ui.payer===p?'on':'')+'">'+esc(p)+'</button>'}).join('')+'</div>';
+ h+='<label class="l">تفاصيل الصرف</label><input id="desc" type="text" placeholder="مثلاً: فندق، عشاء، تكسي…" value="'+esc(ui.desc)+'">';
+ h+='<label class="l">يتقاسمه ('+ui.split.length+' من '+S.people.length+')</label><div class="seg small">'+S.people.map(function(p,i){return '<button data-split="'+i+'" class="'+(ui.split.indexOf(p)>=0?'on':'')+'">'+esc(p)+'</button>'}).join('')+'</div>';
+ h+='<div class="err">'+esc(ui.err)+'</div><button class="btn" data-act="add">حفظ المصروف</button></div>';return h;}
+function listView(){if(!S.items.length)return '<div class="card empty">لا توجد مصاريف بعد</div>';
+ var h='<div class="card">';S.items.slice().reverse().forEach(function(it){var sp=(it.split&&it.split.length&&it.split.length<S.people.length)?' · بين: '+it.split.map(esc).join('، '):'';
+  h+='<div class="item"><button class="x" data-del="'+it.id+'" aria-label="حذف">✕</button><div class="b"><div class="d">'+esc(it.desc||'بدون تفاصيل')+'</div><div class="m">دفع: '+esc(it.payer)+sp+' · '+esc(it.date||'')+'</div></div><div class="v">'+fmt(it.iqd)+' د.ع'+(it.cur==='TMN'?'<small>'+fmt(it.amount)+' تومان</small>':'')+'</div></div>';});
+ return h+'</div>';}
+function sumView(){var c=calc();var h='<div class="card"><div class="tot"><span>مجموع المصاريف</span><b>'+fmt(c.total)+' د.ع</b></div>';
+ var tm=0;S.items.forEach(function(it){if(it.cur==='TMN')tm+=it.amount;});if(tm)h+='<div class="small" style="margin-top:4px">منها '+fmt(tm)+' تومان</div>';h+='</div>';
+ h+='<div class="card"><h2>حساب كل شخص</h2>';S.people.forEach(function(p){var x=c.P[p],b=Math.round(x.bal);
+  h+='<div class="row"><div><div class="who">'+esc(p)+'</div><div class="small">دفع '+fmt(x.paid)+' · حصته '+fmt(x.share)+'</div></div><div class="bal '+(b>0?'pos':b<0?'neg':'')+'">'+(b===0?'متعادل':fmt(Math.abs(b))+' د.ع<br><span class="pill '+(b>0?'pos':'neg')+'">'+(b>0?'له':'عليه')+'</span>')+'</div></div>';});
+ h+='</div><div class="card"><h2>التسوية — منو يدفع لمنو</h2>';
+ if(!c.tr.length)h+='<div class="empty">ماكو تسوية مطلوبة</div>';else c.tr.forEach(function(t){h+='<div class="tr"><span>'+esc(t[0])+'</span><span class="arr">←</span><span>'+esc(t[1])+'</span><span class="v">'+fmt(t[2])+' د.ع</span></div>';});
+ h+='<button class="btn ghost" data-act="copy">مشاركة الحساب (واتساب)</button>';
+ if(S.items.length)h+='<button class="btn ghost" style="color:var(--neg);background:#fbe9e7" data-act="clear">مسح كل المصاريف</button>';
+ return h+'</div>';}
+function summaryText(){var c=calc(),t='حساب سفرة إيران\nالمجموع: '+fmt(c.total)+' د.ع\n\n';S.people.forEach(function(p){var b=Math.round(c.P[p].bal);t+=p+': دفع '+fmt(c.P[p].paid)+' — '+(b>0?'له '+fmt(b):b<0?'عليه '+fmt(-b):'متعادل')+'\n';});
+ if(c.tr.length){t+='\nالتسوية:\n';c.tr.forEach(function(x){t+=x[0]+' يدفع لـ '+x[1]+': '+fmt(x[2])+' د.ع\n';});}return t;}
+root.addEventListener('input',function(e){if(e.target.id==='amt'){ui.amt=e.target.value;var cv=document.getElementById('conv');if(cv)cv.textContent=convLine();}if(e.target.id==='desc')ui.desc=e.target.value;});
+root.addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;var d=b.dataset;
+ if(d.tab){ui.tab=d.tab;try{sessionStorage.setItem('trip-tab',d.tab)}catch(x){}ui.err='';render();return;}
+ if(d.cur){ui.cur=d.cur;render();return;}
+ if(d.payer!=null){ui.payer=S.people[+d.payer];ui.err='';render();return;}
+ if(d.split!=null){var p=S.people[+d.split],k=ui.split.indexOf(p);if(k>=0){if(ui.split.length>1)ui.split.splice(k,1);}else ui.split.push(p);ui.split.sort(function(a,b){return S.people.indexOf(a)-S.people.indexOf(b)});render();return;}
+ if(d.del){var it=S.items.filter(function(x){return x.id===d.del})[0];if(!it)return;modal('<h2>حذف المصروف؟</h2><div class="small">'+esc(it.desc||'')+' — '+fmt(it.iqd)+' د.ع</div>',function(){S.items=S.items.filter(function(x){return x.id!==d.del});save();render();});return;}
+ if(d.act==='add'){var a=num(ui.amt);if(!(a>0)){ui.err='اكتب المبلغ';render();return;}if(!ui.payer){ui.err='اختار الدافع';render();return;}
+  var now=new Date();S.items.push({id:now.getTime().toString(36)+Math.random().toString(36).slice(2,6),amount:a,cur:ui.cur,iqd:Math.round(toIQD(a,ui.cur)),payer:ui.payer,desc:ui.desc.trim(),split:ui.split.slice(),date:now.getDate()+'/'+(now.getMonth()+1)});
+  ui.amt='';ui.desc='';ui.err='';resetSplit();ui.focus=true;save();render();toast('تم الحفظ');return;}
+ if(d.act==='copy'){var t=summaryText();if(window.Android){try{Android.share(t);}catch(x){}return;}try{navigator.clipboard.writeText(t).then(function(){toast('تم النسخ')},function(){toast('تعذر النسخ')});}catch(x){toast('تعذر النسخ')}return;}
+ if(d.act==='clear'){modal('<h2>مسح كل المصاريف؟</h2><div class="small">لا يمكن التراجع</div>',function(){S.items=[];save();render();});return;}
+});
+render();
+
+})();
+</script>
+</body></html>
