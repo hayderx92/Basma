@@ -42,12 +42,13 @@ h2{font-size:15px;margin:0 0 8px}
 .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 16px;border-radius:10px;font-size:14px;z-index:10}
 .status{font-size:12px;color:var(--mut);text-align:center;margin-top:6px}
 </style></head><body><div id="root"></div>
-<script id="state" type="application/json">{"rate":700,"people":["مصطفى","حيدر","عباس","حسن صالح"],"items":[]}</script>
+<script id="state" type="application/json">{"rate":1470,"people":["مصطفى","حيدر","عباس","حسن صالح"],"items":[]}</script>
 <script id="app">
 (function(){
 var S=JSON.parse(document.getElementById('state').textContent);
 var LS='iran-trip-expenses-v1',art=null,saving=false;
 try{var ls=localStorage.getItem(LS);if(ls&&S.items.length===0){var p=JSON.parse(ls);if(p&&p.items&&p.items.length)S=p;}}catch(e){}
+S.rate=1470;S.items.forEach(function(it){if(it.cur==='TMN')it.iqd=Math.round(it.amount*1000/S.rate);});
 var ui={tab:(function(){try{return sessionStorage.getItem('trip-tab')||'add'}catch(e){return 'add'}})(),amt:'',cur:'IQD',payer:null,desc:'',split:null,err:''};
 function resetSplit(){ui.split=S.people.slice();}resetSplit();
 var root=document.getElementById('root');
